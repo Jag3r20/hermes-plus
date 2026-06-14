@@ -1,0 +1,89 @@
+# HERMES PLUS — root docker-compose
+#
+# Spustí všechny tři aplikace jedním příkazem:
+#   docker compose up -d
+#
+# Přístupy po spuštění:
+#   Hermes Dashboard  →  http://localhost:9119
+#   Hermes WebUI      →  http://localhost:8787
+#   Obsidian Klon     →  http://localhost:3333
+#
+# Zastavení:
+#   docker compose down
+#
+# Smazání všech dat (čistý start):
+#   docker compose down -v
+
+services:
+
+  # ── Hermes Agent: Gateway (jádro, bez vlastního portu) ────────────────────
+  hermes-gateway:
+    image: nousresearch/hermes-agent:latest
+    container_name: hermes
+    restart: unless-stopped
+    volumes:
+      - hermes-data:/opt/data
+    environment:
+      - HERMES_UID=10000
+      - HERMES_GID=10000
+    command: ["gateway", "run"]
+    networks:
+      - hermes-net
+
+  # ── Hermes Agent: Dashboard (port 9119) ───────────────────────────────────
+  hermes-dashboard:
+    image: nousresearch/hermes-agent:latest
+    container_name: hermes-dashboard
+    restart: unless-stopped
+    depends_on:
+      - hermes-gateway
+    volumes:
+      - hermes-data:/opt/data
+    environment:
+      - HERMES_UID=10000
+      - HERMES_GID=10000
+      - HERMES_DASHBOARD_HOST=0.0.0.0
+    ports:
+      - "127.0.0.1:9119:9119"
+    command: ["dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--insecure"]
+    networks:
+      - hermes-net
+
+  # ── Hermes WebUI (port 8787) ──────────────────────────────────────────────
+  hermes-webui:
+    build: ./hermes-webui
+    container_name: hermes-webui
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - hermes-webui-data:/home/hermeswebui/.hermes
+    environment:
+      - WANTED_UID=1000
+      - WANTED_GID=1000
+      - HERMES_WEBUI_HOST=0.0.0.0
+      - HERMES_WEBUI_PORT=8787
+      - HERMES_WEBUI_STATE_DIR=/home/hermeswebui/.hermes/webui
+    networks:
+      - hermes-net
+
+  # ── Obsidian Klon — lokální vault editor (port 3333) ─────────────────────
+  obsidian-klon:
+    build: ./obsidian-klon
+    container_name: obsidian-klon
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3333:3333"
+    volumes:
+      - obsidian-vault:/app/vault
+    networks:
+      - hermes-net
+
+networks:
+  hermes-net:
+    driver: bridge
+
+volumes:
+  hermes-data:
+  hermes-webui-data:
+  obsidian-vault:

@@ -1,0 +1,16 @@
+{
+  "name": "sociya-neural-vault",
+  "version": "1.0.0",
+  "description": "SOCIYA neural vault — lokalni druhy mozek (vault + JARVIS UI + 3D vizualizace) s napojenim na Claude pres MCP",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server/app.js",
+    "web": "node src/server/app.js",
+    "mcp": "node src/mcp/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "express": "^4.21.2",
+    "marked": "^14.1.4"
+  }
+}

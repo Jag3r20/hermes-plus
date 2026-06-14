@@ -1,0 +1,20 @@
+# Závislosti
+node_modules/
+
+# Přihlašovací údaje (admin účet se vytvoří při prvním spuštění)
+auth.json
+
+# Soukromý vault uživatele (na první spuštění se vytvoří z vault-starter/)
+/vault/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Pomocné/dočasné
+verify_*.mjs
+shot_*.png
+
+# Lokální nastavení Claude Code
+.claude/settings.local.json

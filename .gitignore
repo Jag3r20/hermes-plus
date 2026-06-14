@@ -1,0 +1,14 @@
+# hermes-agent — compose používá Docker Hub image, kód nepotřeba
+hermes-agent/
+
+# Osobní data
+obsidian-klon/vault/
+obsidian-klon/auth.json
+hermes-webui/.venv/
+
+# Závislosti a artefakty
+node_modules/
+__pycache__/
+*.pyc
+.env
+*.log
